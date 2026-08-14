@@ -28,8 +28,20 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}" ./release.sh
 
+      - name: Extract CHANGELOG section for this version
+        id: notes
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          awk -v v="$VER" '
+            $0 ~ "^## \\[" v "\\]" { on=1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > /tmp/release-notes.md
+          echo "has_notes=$([ -s /tmp/release-notes.md ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release + attach zips
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
-          generate_release_notes: true
+          body_path: /tmp/release-notes.md
+          generate_release_notes: ${{ steps.notes.outputs.has_notes == 'no' }}
