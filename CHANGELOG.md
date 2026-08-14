@@ -3,6 +3,28 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-08-14
+
+### Added
+- **Ops dashboard columns** — per-instance **uptime** (systemd), **disk usage**
+  (`du`), and **backup count/last-run** (from `/var/backups/pocketbase`).
+- **Status history + sparkline** — Locket passively records health checks and
+  shows a rolling 60-observation sparkline per instance (`/api/history/<name>`).
+- `ops.go` + `history.go` backends; all values degrade gracefully when not on a
+  systemd/PocketBase host (e.g. local dev on macOS).
+
+### Changed
+- `GET /api/instances` now includes an `ops` object per instance.
+
+## [0.2.1] — 2026-08-14
+
+### Fixed
+- **Logo rendering in production builds.** The logo was referenced as a hardcoded
+  path, which Vite doesn't rewrite in built assets — the bundled app showed a
+  broken image (and the server build still showed the old padlock emoji). Now
+  imported properly (`vite-env.d.ts` added).
+- Logo now shows in the header, login/setup screens, and favicon.
+
 ## [0.2.0] — 2026-08-14
 
 ### Added
@@ -27,5 +49,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - One-command install (`scripts/install.sh`), uninstaller (`scripts/uninstall.sh`).
 - Dev wiki (private, local-only) + public docs.
 
+[0.2.0]: https://github.com/atensaiadmin/locket/compare/v0.1.0...v0.2.0
+[0.3.0]: https://github.com/atensaiadmin/locket/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/atensaiadmin/locket/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/atensaiadmin/locket/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/atensaiadmin/locket/releases/tag/v0.1.0

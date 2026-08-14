@@ -7,6 +7,25 @@ export interface Instance {
     message?: string
     checked_at: string
   }
+  ops: {
+    version: string
+    uptime_seconds: number
+    disk_bytes: number
+    disk_available: boolean
+    last_backup: string
+    backup_count: number
+  }
+}
+
+export interface HealthPoint {
+  time: string
+  healthy: boolean
+}
+
+export async function fetchHistory(name: string): Promise<HealthPoint[]> {
+  const res = await fetch(`/api/history/${name}`, withAuth())
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
 }
 
 // ---- auth ----------------------------------------------------------------

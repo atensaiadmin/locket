@@ -40,6 +40,7 @@ func main() {
 	http.HandleFunc("/api/version", requireAuth(handleVersion))
 	http.HandleFunc("/api/instances", requireAuth(handleInstances))
 	http.HandleFunc("/api/instances/", requireAuth(handleInstanceAction))
+	http.HandleFunc("/api/history/", requireAuth(handleHistory))
 
 	// Serve the embedded web UI (built via build.sh → copied into server/static).
 	staticRoot, _ := fs.Sub(staticFS, "static")
@@ -68,12 +69,35 @@ func handleInstances(w http.ResponseWriter, r *http.Request) {
 	type row struct {
 		Project
 		Health HealthStatus `json:"health"`
+		Ops    OpsInfo      `json:"ops"`
 	}
 	rows := make([]row, 0, len(projects))
 	for _, p := range projects {
-		rows = append(rows, row{Project: p, Health: checkHealth(r.Context(), p, 3*time.Second)})
+		h := checkHealth(r.Context(), p, 3*time.Second)
+		history.record(p.Name, h.Healthy) // passive status-history logging
+		rows = append(rows, row{Project: p, Health: h, Ops: collectOps(p)})
 	}
 	writeJSON(w, http.StatusOK, rows)
+}
+
+// handleHistory returns the recorded health observations for one instance.
+// Route: /api/history/<name>
+func handleHistory(w http.ResponseWriter, r *http.Request) {
+	name := strings.TrimPrefix(r.URL.Path, "/api/history/")
+	if name == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]any{"error": "missing project name"})
+		return
+	}
+	projects, err := loadProjects(*configPath)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]any{"error": err.Error()})
+		return
+	}
+	if _, ok := findProject(projects, name); !ok {
+		writeJSON(w, http.StatusNotFound, map[string]any{"error": "unknown project: " + name})
+		return
+	}
+	writeJSON(w, http.StatusOK, history.series(name))
 }
 
 // handleInstanceAction: /api/instances/<name>/logs (GET) | <name>/<action> (POST: deploy | restart)

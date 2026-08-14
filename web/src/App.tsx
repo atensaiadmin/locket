@@ -2,21 +2,47 @@ import { useEffect, useState } from 'react'
 import {
   fetchInstances,
   fetchVersion,
+  fetchHistory,
   runAction,
   fetchAuthStatus,
   storeKey,
   clearStoredKey,
   type Instance,
+  type HealthPoint,
   type VersionInfo,
 } from './api'
 import { Button } from './components/Button'
 import { StatusDot } from './components/StatusDot'
 import { LogsModal } from './components/LogsModal'
 import { AuthGate } from './components/AuthGate'
+import { Sparkline } from './components/Sparkline'
 import locketIcon from './assets/icon2.svg'
+
+function fmtUptime(s: number): string {
+  if (!s) return '–'
+  const d = Math.floor(s / 86400)
+  const h = Math.floor((s % 86400) / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  if (d > 0) return `${d}d ${h}h`
+  if (h > 0) return `${h}h ${m}m`
+  return `${m}m`
+}
+
+function fmtBytes(b: number): string {
+  if (!b) return '–'
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let i = 0
+  let n = b
+  while (n >= 1024 && i < units.length - 1) {
+    n /= 1024
+    i++
+  }
+  return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${units[i]}`
+}
 
 export default function App() {
   const [instances, setInstances] = useState<Instance[]>([])
+  const [history, setHistory] = useState<Record<string, HealthPoint[]>>({})
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [output, setOutput] = useState<string | null>(null)
@@ -27,7 +53,20 @@ export default function App() {
   const load = async () => {
     try {
       setError(null)
-      setInstances(await fetchInstances())
+      const data = await fetchInstances()
+      setInstances(data)
+      // fetch history per instance (best-effort, ignore failures)
+      const h: Record<string, HealthPoint[]> = {}
+      await Promise.all(
+        data.map(async (i) => {
+          try {
+            h[i.name] = await fetchHistory(i.name)
+          } catch {
+            /* ignore */
+          }
+        }),
+      )
+      setHistory(h)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'failed to load')
     }
@@ -138,6 +177,10 @@ export default function App() {
               <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <th className="px-4 py-3 font-medium">Project</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">History</th>
+                <th className="px-4 py-3 font-medium">Uptime</th>
+                <th className="px-4 py-3 font-medium">Disk</th>
+                <th className="px-4 py-3 font-medium">Backups</th>
                 <th className="px-4 py-3 font-medium">Port</th>
                 <th className="px-4 py-3 font-medium">Domain</th>
                 <th className="px-4 py-3 text-right font-medium">Actions</th>
@@ -149,6 +192,16 @@ export default function App() {
                   <td className="px-4 py-3 font-medium">{i.name}</td>
                   <td className="px-4 py-3">
                     <StatusDot healthy={i.health.healthy} />
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">
+                    <Sparkline points={history[i.name] ?? []} />
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">{fmtUptime(i.ops?.uptime_seconds ?? 0)}</td>
+                  <td className="px-4 py-3 text-slate-500">
+                    {i.ops?.disk_available ? fmtBytes(i.ops.disk_bytes) : '–'}
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">
+                    {i.ops?.backup_count ? `${i.ops.backup_count}` : '–'}
                   </td>
                   <td className="px-4 py-3 text-slate-500">{i.port}</td>
                   <td className="px-4 py-3">
@@ -182,7 +235,7 @@ export default function App() {
               ))}
               {instances.length === 0 && !error && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                  <td colSpan={9} className="px-4 py-8 text-center text-slate-400">
                     No instances found in projects.conf
                   </td>
                 </tr>
