@@ -1,7 +1,6 @@
 # Locket — Roadmap
 
-*High-level direction. Detailed, checkbox-level tracking lives in
-[Milestones](milestones.md) — that's the file to update as features ship.*
+*High-level, user-facing direction for where Locket is headed.*
 
 ## Phase 0 — Foundation ✅
 Architecture (overlay), naming, org, tech stack, scaffold.

@@ -32,4 +32,4 @@ instances at a glance.
 
 ## Status
 
-Early: architecture & stack being defined. See the [dev wiki](../wiki/home.md).
+Early: Locket v0.1.0 released. See the [README](../README.md) for current capabilities.

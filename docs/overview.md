@@ -6,8 +6,7 @@ progressively alongside the product.
 ## Contents
 
 - [Overview](overview.md) — what Locket is (the short story)
-- [Milestones](milestones.md) — single source of truth for what's done / planned
-- [Features](features.md) — what it does (planned)
+- [Features](features.md) — what it does
 - [Roadmap](roadmap.md) — where it's going
 - [Quick start](quickstart.md) — getting it running
 
