@@ -51,7 +51,13 @@ ZIP="locket_${VERSION}_linux_${ARCH}.zip"
 echo "==> Downloading $ZIP"
 curl -sL -o "$ZIP" "https://github.com/${REPO}/releases/download/v${VERSION}/${ZIP}"
 unzip -o "$ZIP" -d "_tmp_$VERSION"
-mv "_tmp_$VERSION/locket" ./locket
+
+# The release zip may contain the binary at the root OR inside a folder
+# (e.g. locket_0.2.0_linux_amd64/locket). Find it either way:
+BIN="$(find "_tmp_$VERSION" -type f \( -name locket -o -name locket.exe \) | head -1)"
+[ -n "$BIN" ] || { echo "ERROR: locket binary not found in the release zip"; exit 1; }
+
+mv "$BIN" ./locket
 chmod +x ./locket
 rm -rf "_tmp_$VERSION" "$ZIP"
 
