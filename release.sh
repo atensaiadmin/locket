@@ -49,6 +49,11 @@ for pair in "${TARGETS[@]}"; do
   # Include a per-version README + config example so a download is self-contained.
   cp README.md "$out/README.md" 2>/dev/null || true
   cp projects.conf.example "$out/projects.conf.example" 2>/dev/null || true
+  # Ship the provisioning + installer scripts so a release is fully
+  # self-contained and version-matched (no dependency on live main).
+  for s in install.sh update.sh uninstall.sh add.sh generate.sh deploy.sh; do
+    cp "scripts/$s" "$out/$s" 2>/dev/null || true
+  done
 
   (cd "$DIST" && zip -qr "${name}.zip" "$(basename "$out")")
   rm -rf "$out"

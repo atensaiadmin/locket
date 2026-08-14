@@ -75,14 +75,17 @@ echo "==> Installed: $INSTALL_DIR/locket"
 "$INSTALL_DIR/locket" --version 2>/dev/null || true
 
 # ---- deploy provisioning scripts (add.sh / generate.sh / deploy.sh) -------
-# Locket shells out to these at /opt/pocketbase/scripts/, so a fresh install
-# provisions them automatically — no manual scp needed.
+# Prefer the scripts bundled in the release zip (version-matched); fall back to
+# raw.githubusercontent.com in case an older zip lacks them.
 PB_SCRIPTS="/opt/pocketbase/scripts"
 mkdir -p "$PB_SCRIPTS"
 for s in add.sh generate.sh deploy.sh; do
-  if curl -fsSL -o "$PB_SCRIPTS/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
+  if [ -f "_tmp_$VERSION/$s" ]; then
+    install -m 755 "_tmp_$VERSION/$s" "$PB_SCRIPTS/$s"
+    echo "  installed provisioning script: $s (from release)"
+  elif curl -fsSL -o "$PB_SCRIPTS/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
     chmod +x "$PB_SCRIPTS/$s"
-    echo "  installed provisioning script: $s"
+    echo "  installed provisioning script: $s (from GitHub)"
   else
     echo "  WARN: could not fetch $s — New Project / Deploy may not work"
   fi
