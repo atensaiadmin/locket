@@ -35,7 +35,6 @@ See the [Quick start](quickstart.md) for full details.
 - [Overview](overview.md) — the story
 - [Features](features.md) — what it does
 - [Quick start](quickstart.md) — get running
-- [Roadmap](roadmap.md) — where it's going
 
 ## License
 

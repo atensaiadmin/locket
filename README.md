@@ -68,7 +68,6 @@ Full guide: [docs/quickstart.md](docs/quickstart.md)
 - [Overview](docs/overview.md)
 - [Features](docs/features.md)
 - [Quick start](docs/quickstart.md)
-- [Roadmap](docs/roadmap.md)
 
 ## Credits
 

@@ -7,7 +7,6 @@ progressively alongside the product.
 
 - [Overview](overview.md) — what Locket is (the short story)
 - [Features](features.md) — what it does
-- [Roadmap](roadmap.md) — where it's going
 - [Quick start](quickstart.md) — getting it running
 
 > Rule of thumb: **wiki = how it works** (for devs), **docs = what it is** (for everyone).
