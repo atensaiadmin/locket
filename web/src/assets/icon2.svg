@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img">
+  <title>Locket: Shield Pocket Logo</title>
+  <!-- Background is transparent -->
+  <!-- The primary 'Shield Pocket' shape (Emerald #059669) -->
+  <path fill="#059669" d="M32 48v112c0 35.35 28.65 64 64 64h64c35.35 0 64-28.65 64-64V48H32zm160 32L128 112 64 80v-16h128v16z"/>
+  <!-- Optional: A tiny dot/keyhole knockout for extra context, minimal style -->
+  <circle cx="128" cy="144" r="16" fill="#F9FAFB"/> 
+</svg>

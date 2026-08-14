@@ -1,6 +1,18 @@
-# Locket
+<p align="center">
+  <img src="web/src/assets/icon2.svg" alt="Locket logo" width="96" height="96" />
+</p>
 
-> The case you carry your PocketBase fleet in.
+<h1 align="center">Locket</h1>
+
+<p align="center">
+  <em>The case you carry your PocketBase fleet in.</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/atensaiadmin/locket/releases"><img alt="Release" src="https://img.shields.io/github/v/release/atensaiadmin/locket?style=flat-square" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square" /></a>
+  <a href="https://github.com/atensaiadmin/locket/actions"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/atensaiadmin/locket/release.yml?style=flat-square" /></a>
+</p>
 
 **Locket** is a self-hosted control plane / fleet dashboard for PocketBase.
 It sits *on top of* running PocketBase instances — it never forks or bundles

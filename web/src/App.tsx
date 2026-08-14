@@ -87,9 +87,12 @@ export default function App() {
         <>
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <h1 className="text-lg font-semibold tracking-tight">
-            🔒 Locket
-            <span className="ml-2 text-sm font-normal text-slate-400">PocketBase fleet</span>
+          <h1 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+            <img src="/src/assets/icon2.svg" alt="" className="h-6 w-6" />
+            <span>
+              Locket
+              <span className="ml-2 text-sm font-normal text-slate-400">PocketBase fleet</span>
+            </span>
             {version && (
               <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
                 v{version.version.replace(/^v/, '')}

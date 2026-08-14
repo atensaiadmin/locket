@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Locket logo">
+  <title>Locket</title>
+  
+  <!-- 
+    LOCKET LOGO - "Keepsake Box" Concept
+    Design: Rounded container with keyhole
+    Palette: Deep Indigo accent + warm neutrals
+    Optimized for: favicons, app icons, avatars (square-safe)
+  -->
+  
+  <!-- Definitions -->
+  <defs>
+    <!-- Soft shadow for depth (optional, can be removed for pure flat) -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1e1b4b" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle (for presentation only - remove for transparent usage) -->
+  <circle cx="128" cy="128" r="120" fill="#fafafa"/>
+  
+  <!-- Main keepsake box / locket case -->
+  <rect 
+    x="52" 
+    y="52" 
+    width="152" 
+    height="152" 
+    rx="32" 
+    ry="32"
+    fill="#ffffff"
+    stroke="#4338ca"
+    stroke-width="8"
+    filter="url(#softShadow)"
+  />
+  
+  <!-- Inner highlight line (suggests dimensionality without 3D) -->
+  <rect 
+    x="64" 
+    y="64" 
+    width="128" 
+    height="128" 
+    rx="24" 
+    ry="24"
+    fill="none"
+    stroke="#e0e7ff"
+    stroke-width="2"
+  />
+  
+  <!-- Keyhole - circle portion -->
+  <circle 
+    cx="128" 
+    cy="116" 
+    r="18"
+    fill="#4338ca"
+  />
+  
+  <!-- Keyhole - trapezoid portion (body) -->
+  <path 
+    d="M 116 130 L 140 130 L 132 162 L 124 162 Z"
+    fill="#4338ca"
+  />
+  
+  <!-- Keyhole inner highlight (subtle) -->
+  <circle 
+    cx="125" 
+    cy="112" 
+    r="6"
+    fill="#818cf8"
+    opacity="0.6"
+  />
+  
+  <!-- Optional: Tiny clasp detail at top center -->
+  <line 
+    x1="120" 
+    y1="52" 
+    x2="136" 
+    y2="52" 
+    stroke="#4338ca"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  
+  <!-- Clasp bar -->
+  <rect 
+    x="122" 
+    y="48" 
+    width="12" 
+    height="6" 
+    rx="2"
+    fill="#4338ca"
+  />
+</svg>
