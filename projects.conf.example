@@ -1,0 +1,4 @@
+# Local test config for Locket dev (points at a tunneled PocketBase).
+# In production, use /opt/pocketbase/projects.conf on the server.
+# Format:  <name>  <port>  <domain>
+prodlogonline  8091    prodlogonline.atensai.com

@@ -1,0 +1,12 @@
+# Build artifacts
+locket
+web/node_modules/
+web/dist/
+server/static/
+
+# Env / secrets
+.env
+*.env
+
+# OS
+.DS_Store
