@@ -12,14 +12,17 @@ with its own admin at its own subdomain, there's no single place to see them
 all. Locket fills that gap: a beautiful, self-hosted dashboard for managing
 *all* your PocketBase instances at a glance.
 
-## What it does (the plan)
+## What it does
 
 - **Fleet overview** — every instance, its status, at a glance
 - **Health** — green/red per instance (`/api/health`)
-- **Deploy** — one-click "update this project" (wraps `deploy.sh`)
-- **Add project** — register a new instance (wraps `projects.conf` + `generate.sh`)
-- **Backup** — run/status of backups (wraps `backup.sh`)
+- **Ops at a glance** — uptime, disk usage, backups, and PocketBase version
+- **Status history** — a rolling sparkline of each instance's health
+- **Logs** — `journalctl` per instance, with level filter + live follow
+- **Deploy / Restart** — one-click per project (wraps `deploy.sh` / systemd)
+- **Add project** — create a new instance from the dashboard (name/port/domain)
 - **Deep-links** — jump straight into each instance's native admin (`/_/`)
+- **Access-key auth** — first-run setup + login, hashed keys, update checker
 
 ## What it deliberately is NOT
 
@@ -34,4 +37,5 @@ all. Locket fills that gap: a beautiful, self-hosted dashboard for managing
 
 ## Status
 
-Early: Locket v0.1.0 released. See the [README](../README.md) for current capabilities.
+v0.4.0 — active development. See the [README](../README.md) and
+[CHANGELOG](../CHANGELOG.md) for the current feature set.

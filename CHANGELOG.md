@@ -17,6 +17,15 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - The server now passes `PB_HOME` explicitly to provisioning scripts, so the
   script home and `--pbhome` can never drift.
 
+### Fixed
+- **Update banner compared versions by string.** It could claim a newer release
+  existed when the running build was actually ahead of the latest published
+  release (e.g. running v0.4.0 while v0.3.0 was the newest tag). It now compares
+  numerically (semver), so it only appears for genuinely newer releases.
+- **`install.sh` / `update.sh` no longer reset your access key.** The installer
+  now preserves an existing `LOCKET_TOKEN` from the current systemd unit when
+  re-run; an explicit `TOKEN=...` still wins.
+
 ## [0.3.0] — 2026-08-14
 
 ### Added

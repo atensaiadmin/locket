@@ -18,6 +18,16 @@ CONFIG="${CONFIG:-/opt/pocketbase/projects.conf}"
 TOKEN="${TOKEN:-}"                          # optional access key (see note below)
 INSTALL_DIR="/opt/locket"
 
+# Preserve an existing access key so updates never reset it (an explicit
+# TOKEN=... always wins).
+if [ -z "$TOKEN" ]; then
+  EXISTING="$(sed -n 's/^Environment=LOCKET_TOKEN=//p' /etc/systemd/system/locket.service 2>/dev/null | head -1)"
+  if [ -n "$EXISTING" ]; then
+    TOKEN="$EXISTING"
+    echo "==> Preserving existing LOCKET_TOKEN"
+  fi
+fi
+
 # If ADDR binds all interfaces (starts with ':') and no token is given, generate
 # one so Locket can start and stays protected from first boot. To set your own
 # key later, open the dashboard and use Settings, or re-run with TOKEN=...

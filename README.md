@@ -26,9 +26,13 @@ PocketBase, and it only works where PocketBase is already running.
 
 - **Fleet overview** — every PocketBase instance on your server, at a glance
 - **Health** — live up/down status per instance
+- **Ops at a glance** — uptime, disk usage, backups, and PocketBase version per instance
+- **Status history** — a rolling sparkline of each instance's health
 - **Logs** — view `journalctl` logs per instance, with level filter + live follow
 - **Actions** — deploy (`git pull` + migrate + restart) and restart, one click
+- **Add project** — create a new instance (name/port/domain) from the dashboard
 - **Deep-links** — jump straight into each instance's native admin (`/_/`)
+- **Access-key auth** — first-run setup, login, hashed keys, update checker
 
 ## Installation (one command)
 
@@ -61,6 +65,19 @@ creates a systemd service, and (optionally) wires it into Caddy.
 3. See your fleet; click **Logs** to troubleshoot, **Deploy** to ship updates
 
 Full guide: [docs/quickstart.md](docs/quickstart.md)
+
+## Updating
+
+Locket ships a self-updater for the server:
+
+```bash
+bash update.sh                  # to the latest release
+VERSION=0.4.0 bash update.sh    # to a specific version
+```
+
+It downloads the matching release zip from GitHub, replaces the binary,
+rewrites the systemd unit (preserving your access key), and restarts. Needs a
+published release — see [releases](https://github.com/atensaiadmin/locket/releases).
 
 ## Documentation
 

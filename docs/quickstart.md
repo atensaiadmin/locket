@@ -44,8 +44,28 @@ ask for that key.
 
 ## 4. See your fleet
 
-The dashboard lists every instance in `projects.conf`: live health, logs
-(`journalctl` per instance), and **Deploy / Restart** actions.
+The dashboard lists every instance in `projects.conf`: live health, ops
+(uptime / disk / backups / PocketBase version), a status-history sparkline,
+logs (`journalctl` per instance), and **Deploy / Restart** actions.
+
+## 5. Add a project
+
+Hit **＋ New Project**, enter a name, port and domain. Locket appends it to
+`projects.conf`, scaffolds the project folder from the template, regenerates
+the systemd + Caddy configs, and starts the service. Point the domain's DNS at
+the server, then open `https://<domain>/_/` to create the PocketBase superuser.
+
+## Updating
+
+On the server:
+
+```bash
+bash update.sh                 # to the latest release
+VERSION=0.4.0 bash update.sh   # to a specific version
+```
+
+`update.sh` downloads the matching release zip, replaces the binary, rewrites
+the systemd unit (**preserving your access key**), and restarts.
 
 ## Adding a domain later (no reinstall)
 
