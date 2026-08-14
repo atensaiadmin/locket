@@ -1,0 +1,35 @@
+name: Release
+
+# Builds Locket release binaries and attaches them to a GitHub Release.
+# Trigger: push a tag like v0.1.0  →  git push origin v0.1.0
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build release zips
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}" ./release.sh
+
+      - name: Create GitHub Release + attach zips
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
