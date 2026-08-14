@@ -52,8 +52,12 @@ logs (`journalctl` per instance), and **Deploy / Restart** actions.
 
 Hit **＋ New Project**, enter a name, port and domain. Locket appends it to
 `projects.conf`, scaffolds the project folder from the template, regenerates
-the systemd + Caddy configs, and starts the service. Point the domain's DNS at
-the server, then open `https://<domain>/_/` to create the PocketBase superuser.
+systemd + Caddy configs, and starts the service. Point the domain's DNS at the
+server, then open `https://<domain>/_/` to create the PocketBase superuser.
+
+> **Caddy note:** New Project writes a Caddy site so the domain gets an https
+> subdomain. If Caddy isn't running, the project is still created and serves on
+> its port (no https subdomain) — Locket warns instead of failing.
 
 ## Updating
 

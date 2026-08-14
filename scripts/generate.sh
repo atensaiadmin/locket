@@ -79,7 +79,9 @@ if ! grep -q "import $SITES_DIR/" "$CADDYFILE" 2>/dev/null; then
 fi
 
 systemctl daemon-reload
-systemctl reload caddy
+# Caddy is optional — without it the project still runs (on its port), just
+# without an https subdomain. Don't fail the whole run if it's not present.
+systemctl reload caddy 2>/dev/null || echo "  (caddy not running — reload skipped)"
 
 echo ""
 echo "Done. For each new project:"
