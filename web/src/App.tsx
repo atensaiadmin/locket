@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import {
   fetchInstances,
   fetchVersion,
@@ -177,10 +177,6 @@ export default function App() {
               <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <th className="px-4 py-3 font-medium">Project</th>
                 <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">History</th>
-                <th className="px-4 py-3 font-medium">Uptime</th>
-                <th className="px-4 py-3 font-medium">Disk</th>
-                <th className="px-4 py-3 font-medium">Backups</th>
                 <th className="px-4 py-3 font-medium">Port</th>
                 <th className="px-4 py-3 font-medium">Domain</th>
                 <th className="px-4 py-3 text-right font-medium">Actions</th>
@@ -188,54 +184,78 @@ export default function App() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {instances.map((i) => (
-                <tr key={i.name} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium">{i.name}</td>
-                  <td className="px-4 py-3">
-                    <StatusDot healthy={i.health.healthy} />
-                  </td>
-                  <td className="px-4 py-3 text-slate-500">
-                    <Sparkline points={history[i.name] ?? []} />
-                  </td>
-                  <td className="px-4 py-3 text-slate-500">{fmtUptime(i.ops?.uptime_seconds ?? 0)}</td>
-                  <td className="px-4 py-3 text-slate-500">
-                    {i.ops?.disk_available ? fmtBytes(i.ops.disk_bytes) : '–'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-500">
-                    {i.ops?.backup_count ? `${i.ops.backup_count}` : '–'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-500">{i.port}</td>
-                  <td className="px-4 py-3">
-                    <a
-                      href={`https://${i.domain}/_/`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-slate-700 underline decoration-slate-300 hover:text-slate-900"
-                    >
-                      {i.domain}
-                    </a>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" onClick={() => setLogsFor(i.name)}>
-                        Logs
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        disabled={!!busy}
-                        onClick={() => act(i.name, 'restart')}
+                <Fragment key={i.name}>
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-3 font-medium">{i.name}</td>
+                    <td className="px-4 py-3">
+                      <StatusDot healthy={i.health.healthy} />
+                    </td>
+                    <td className="px-4 py-3 text-slate-500">{i.port}</td>
+                    <td className="px-4 py-3">
+                      <a
+                        href={`https://${i.domain}/_/`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-slate-700 underline decoration-slate-300 hover:text-slate-900"
                       >
-                        Restart
-                      </Button>
-                      <Button disabled={!!busy} onClick={() => act(i.name, 'deploy')}>
-                        {busy === `${i.name}:deploy` ? 'Deploying…' : 'Deploy'}
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
+                        {i.domain}
+                      </a>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" onClick={() => setLogsFor(i.name)}>
+                          Logs
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          disabled={!!busy}
+                          onClick={() => act(i.name, 'restart')}
+                        >
+                          Restart
+                        </Button>
+                        <Button disabled={!!busy} onClick={() => act(i.name, 'deploy')}>
+                          {busy === `${i.name}:deploy` ? 'Deploying…' : 'Deploy'}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="bg-slate-50/60">
+                    <td colSpan={5} className="px-4 pb-3">
+                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-slate-400">Uptime</span>
+                          <span className="font-medium text-slate-700">{fmtUptime(i.ops?.uptime_seconds ?? 0)}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-slate-400">Disk</span>
+                          <span className="font-medium text-slate-700">
+                            {i.ops?.disk_available ? fmtBytes(i.ops.disk_bytes) : '–'}
+                          </span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-slate-400">Backups</span>
+                          <span className="font-medium text-slate-700">
+                            {i.ops?.backup_count ? `${i.ops.backup_count}` : '–'}
+                          </span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-slate-400">PB</span>
+                          <span className="font-medium text-slate-700">
+                            {i.ops?.version ? `v${i.ops.version.replace(/^v/, '')}` : '–'}
+                          </span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-slate-400">History</span>
+                          <Sparkline points={history[i.name] ?? []} />
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </Fragment>
               ))}
               {instances.length === 0 && !error && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-8 text-center text-slate-400">
+                  <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
                     No instances found in projects.conf
                   </td>
                 </tr>
