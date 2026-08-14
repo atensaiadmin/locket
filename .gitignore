@@ -3,6 +3,11 @@ locket
 web/node_modules/
 web/dist/
 server/static/
+dist/
+
+# Dev wiki — private, developer-only notes. NOT part of the public repo.
+# (docs/ stays public; wiki/ stays local.)
+wiki/
 
 # Env / secrets
 .env

@@ -49,8 +49,10 @@ Update this as features ship. Status legend: ✅ done · 🔨 in progress · ⬜
 
 ## Phase 4 — Community / distribution
 
-- [ ] **Git setup:** push `locket/` to GitHub (`atensai/locket`); decide public vs private (public recommended — Locket is meant to be MIT OSS)
-- [ ] **Server git access:** clone on server (public repo = zero credentials; else SSH deploy key)
+- [x] **Git setup:** pushed `locket/` to GitHub at `atensaiadmin/locket` (public)
+- [x] **Release tooling:** `release.sh` cross-compiles 5 platforms; GitHub Actions workflow auto-builds + attaches zips to a Release on tag push
+- [x] **v0.1.0 published:** tag `v0.1.0` pushed; release build succeeded with 5 platform zips
+- [ ] **Server git access:** clone on server (public repo = zero credentials)
 - [ ] Deploy Locket to the server as a systemd service (unlocks real testing of logs/deploy/restart)
 - [ ] `deploy-locket.sh` — build on Mac → push → pull + rebuild on server
 - [ ] Docker image (secondary distribution)
