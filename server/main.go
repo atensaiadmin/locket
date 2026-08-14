@@ -41,6 +41,7 @@ func main() {
 	http.HandleFunc("/api/instances", requireAuth(handleInstances))
 	http.HandleFunc("/api/instances/", requireAuth(handleInstanceAction))
 	http.HandleFunc("/api/history/", requireAuth(handleHistory))
+	http.HandleFunc("/api/projects", requireAuth(handleCreateProject))
 
 	// Serve the embedded web UI (built via build.sh → copied into server/static).
 	staticRoot, _ := fs.Sub(staticFS, "static")

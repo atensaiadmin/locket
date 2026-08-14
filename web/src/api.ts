@@ -121,6 +121,28 @@ export async function runAction(name: string, action: Action): Promise<string> {
   return data.output ?? ''
 }
 
+export interface CreateProjectResult {
+  ok: boolean
+  output: string
+}
+
+export async function createProject(
+  name: string,
+  port: string,
+  domain: string,
+): Promise<CreateProjectResult> {
+  const res = await fetch('/api/projects', withAuth({
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, port, domain }),
+  }))
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body?.error ?? `HTTP ${res.status}`)
+  }
+  return res.json()
+}
+
 export interface LogsResult {
   available: boolean
   lines: string[]

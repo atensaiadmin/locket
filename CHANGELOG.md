@@ -3,6 +3,20 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-08-14
+
+### Added
+- **New Project button** — create a PocketBase instance straight from the
+  dashboard (`＋ New Project`). Enter a name, port and domain; Locket appends it
+  to `projects.conf`, scaffolds `/opt/pocketbase/<name>` from the project
+  template, regenerates the systemd + Caddy configs, and starts the new service.
+  - `POST /api/projects` (auth required) with server-side validation
+    (name / port / domain format, duplicate checks against the live config).
+  - New `add.sh` provisioning script (ships alongside `deploy.sh`).
+  - Port field auto-suggests the next free port.
+- The server now passes `PB_HOME` explicitly to provisioning scripts, so the
+  script home and `--pbhome` can never drift.
+
 ## [0.3.0] — 2026-08-14
 
 ### Added

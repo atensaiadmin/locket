@@ -16,6 +16,7 @@ import { StatusDot } from './components/StatusDot'
 import { LogsModal } from './components/LogsModal'
 import { AuthGate } from './components/AuthGate'
 import { Sparkline } from './components/Sparkline'
+import { NewProjectModal } from './components/NewProjectModal'
 import locketIcon from './assets/icon2.svg'
 
 function fmtUptime(s: number): string {
@@ -47,6 +48,7 @@ export default function App() {
   const [busy, setBusy] = useState<string | null>(null)
   const [output, setOutput] = useState<string | null>(null)
   const [logsFor, setLogsFor] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
   const [version, setVersion] = useState<VersionInfo | null>(null)
   const [auth, setAuth] = useState<'loading' | 'setup' | 'login' | 'ready'>('loading')
 
@@ -119,6 +121,19 @@ export default function App() {
     }
   }
 
+  // suggest the next free port (max used + 1), starting at 8091
+  const nextPort = () => {
+    const used = instances
+      .map((i) => Number(i.port))
+      .filter((n) => !Number.isNaN(n))
+    const max = used.length ? Math.max(...used) : 8090
+    return String(max + 1)
+  }
+
+  const onProjectCreated = async () => {
+    await load()
+  }
+
   return (
     <div className="min-h-screen">
       {auth === 'setup' && <AuthGate mode="setup" onAuthed={onAuthed} />}
@@ -140,6 +155,9 @@ export default function App() {
             )}
           </h1>
           <div className="flex items-center gap-2">
+            <Button onClick={() => setCreating(true)} disabled={!!busy}>
+              ＋ New Project
+            </Button>
             <Button variant="ghost" onClick={load} disabled={!!busy}>
               ↻ Refresh
             </Button>
@@ -272,6 +290,13 @@ export default function App() {
       </main>
 
       {logsFor && <LogsModal name={logsFor} onClose={() => setLogsFor(null)} />}
+      {creating && (
+        <NewProjectModal
+          defaultPort={nextPort()}
+          onClose={() => setCreating(false)}
+          onCreated={onProjectCreated}
+        />
+      )}
         </>
       )}
     </div>
