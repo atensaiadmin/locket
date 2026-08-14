@@ -13,6 +13,7 @@ import { Button } from './components/Button'
 import { StatusDot } from './components/StatusDot'
 import { LogsModal } from './components/LogsModal'
 import { AuthGate } from './components/AuthGate'
+import locketIcon from './assets/icon2.svg'
 
 export default function App() {
   const [instances, setInstances] = useState<Instance[]>([])
@@ -88,7 +89,7 @@ export default function App() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <h1 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <img src="/src/assets/icon2.svg" alt="" className="h-6 w-6" />
+            <img src={locketIcon} alt="" className="h-6 w-6" />
             <span>
               Locket
               <span className="ml-2 text-sm font-normal text-slate-400">PocketBase fleet</span>

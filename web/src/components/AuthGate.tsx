@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { setupKey, loginKey } from '../api'
+import locketIcon from '../assets/icon2.svg'
 
 interface AuthGateProps {
   mode: 'setup' | 'login'
@@ -44,7 +45,7 @@ export function AuthGate({ mode, onAuthed }: AuthGateProps) {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <img src="/src/assets/icon2.svg" alt="Locket" className="mx-auto h-12 w-12" />
+          <img src={locketIcon} alt="Locket" className="mx-auto h-12 w-12" />
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Locket</h1>
           <p className="mt-1 text-sm text-slate-500">
             {mode === 'setup' ? 'Set your access key to secure this dashboard' : 'Enter your access key'}
