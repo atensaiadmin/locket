@@ -5,10 +5,12 @@
 **Locket is the case you carry your PocketBase fleet in.**
 
 PocketBase gives you "Supabase in your pocket" — a self-hosted backend that's
-yours to walk with. But once you have several projects, each with its own admin
-at its own subdomain, there's no single place to see them all. Locket fills that
-gap: a beautiful, self-hosted dashboard for managing *all* your PocketBase
-instances at a glance.
+yours to walk with. ([PocketBase](https://pocketbase.io) is the open-source
+backend-as-a-service this tool builds on — an independent project, not
+affiliated with Locket or Atensai.) But once you have several projects, each
+with its own admin at its own subdomain, there's no single place to see them
+all. Locket fills that gap: a beautiful, self-hosted dashboard for managing
+*all* your PocketBase instances at a glance.
 
 ## What it does (the plan)
 

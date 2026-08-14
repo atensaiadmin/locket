@@ -64,10 +64,18 @@ Full guide: [docs/quickstart.md](docs/quickstart.md)
 
 ## Documentation
 
+- **Docs site:** https://atensaiadmin.github.io/locket/
 - [Overview](docs/overview.md)
 - [Features](docs/features.md)
 - [Quick start](docs/quickstart.md)
 - [Roadmap](docs/roadmap.md)
+
+## Credits
+
+Locket manages [PocketBase](https://pocketbase.io) instances — the open-source
+backend-as-a-service by [Gani Georgiev](https://github.com/ganigeorgiev)
+(MIT). PocketBase runs standalone; Locket is an independent companion tool that
+works only where PocketBase is already running.
 
 ## License
 
