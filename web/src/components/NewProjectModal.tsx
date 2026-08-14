@@ -29,6 +29,8 @@ export function NewProjectModal({ defaultPort, onClose, onCreated }: NewProjectM
       onCreated()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'failed to create project')
+      const out = (e as { output?: string }).output
+      if (out) setOutput(out) // show the script's own output so failures are diagnosable
     } finally {
       setBusy(false)
     }

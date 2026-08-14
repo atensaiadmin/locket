@@ -138,7 +138,9 @@ export async function createProject(
   }))
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    throw new Error(body?.error ?? `HTTP ${res.status}`)
+    const err = new Error(body?.error ?? `HTTP ${res.status}`) as Error & { output?: string }
+    err.output = body?.output // attach the script's own output so the UI can show it
+    throw err
   }
   return res.json()
 }
