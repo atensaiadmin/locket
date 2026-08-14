@@ -20,7 +20,8 @@ mkdir -p server/static
 cp -a web/dist/. server/static/
 
 echo "==> Building Go binary"
-(cd server && go build -o ../locket .)
+VERSION="$(git describe --tags --always 2>/dev/null || echo dev)"
+(cd server && go build -ldflags "-X main.Version=$VERSION" -o ../locket .)
 
-echo "Done → ./locket"
+echo "Done → ./locket (version: $VERSION)"
 echo "Run it with:  ./locket --config /opt/pocketbase/projects.conf"

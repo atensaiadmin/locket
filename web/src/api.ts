@@ -45,3 +45,15 @@ export async function fetchLogs(
   }
   return res.json()
 }
+
+export interface VersionInfo {
+  version: string
+  latest: string
+  update_available: boolean
+}
+
+export async function fetchVersion(): Promise<VersionInfo> {
+  const res = await fetch('/api/version')
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
+}

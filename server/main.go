@@ -25,6 +25,7 @@ func main() {
 	flag.Parse()
 
 	http.HandleFunc("/api/health", handleLocketHealth)
+	http.HandleFunc("/api/version", handleVersion)
 	http.HandleFunc("/api/instances", handleInstances)
 	http.HandleFunc("/api/instances/", handleInstanceAction)
 

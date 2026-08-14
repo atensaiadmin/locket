@@ -45,7 +45,7 @@ for pair in "${TARGETS[@]}"; do
   if [ "$os" = "windows" ]; then
     bin="locket.exe"
   fi
-  (cd server && GOOS="$os" GOARCH="$arch" go build -o "../${out}/${bin}" .)
+  (cd server && GOOS="$os" GOARCH="$arch" go build -ldflags "-X main.Version=v$VERSION" -o "../${out}/${bin}" .)
   # Include a per-version README + config example so a download is self-contained.
   cp README.md "$out/README.md" 2>/dev/null || true
   cp projects.conf.example "$out/projects.conf.example" 2>/dev/null || true

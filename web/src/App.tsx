@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchInstances, runAction, type Instance } from './api'
+import { fetchInstances, fetchVersion, runAction, type Instance, type VersionInfo } from './api'
 import { Button } from './components/Button'
 import { StatusDot } from './components/StatusDot'
 import { LogsModal } from './components/LogsModal'
@@ -10,6 +10,7 @@ export default function App() {
   const [busy, setBusy] = useState<string | null>(null)
   const [output, setOutput] = useState<string | null>(null)
   const [logsFor, setLogsFor] = useState<string | null>(null)
+  const [version, setVersion] = useState<VersionInfo | null>(null)
 
   const load = async () => {
     try {
@@ -22,6 +23,7 @@ export default function App() {
 
   useEffect(() => {
     load()
+    fetchVersion().then(setVersion).catch(() => {})
   }, [])
 
   const act = async (name: string, action: 'deploy' | 'restart') => {
@@ -43,11 +45,30 @@ export default function App() {
           <h1 className="text-lg font-semibold tracking-tight">
             🔒 Locket
             <span className="ml-2 text-sm font-normal text-slate-400">PocketBase fleet</span>
+            {version && (
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
+                v{version.version.replace(/^v/, '')}
+              </span>
+            )}
           </h1>
           <Button variant="ghost" onClick={load} disabled={!!busy}>
             ↻ Refresh
           </Button>
         </div>
+        {version?.update_available && (
+          <div className="border-t border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-800">
+            ✨ New version available: <strong>v{version.latest.replace(/^v/, '')}</strong> (you're on v
+            {version.version.replace(/^v/, '')}).{' '}
+            <a
+              href={`https://github.com/${'atensaiadmin'}/locket/releases`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-2 hover:text-amber-900"
+            >
+              View releases
+            </a>
+          </div>
+        )}
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
