@@ -8,13 +8,13 @@ Architecture (overlay), naming, org, tech stack, scaffold.
 ## Phase 1 — MVP ✅
 Fleet dashboard + health + restart/deploy actions, shipped as one embedded binary.
 
-## Phase 2 — Troubleshooting & ops (current)
-Instance logs viewer, status history, backup status, disk usage.
+## Phase 2 — Troubleshooting & ops (mostly done)
+Instance logs viewer (level filter + live follow), status history, backup status, disk usage.
 
 ## Phase 3 — Polish
-Console auth, add-project flow, auto-discovery, alerts.
+Add-project flow, auto-discovery, alerts, console auth polish.
 
 ## Phase 4 — Community
-Ship as a systemd service, Docker image, publish MIT at `atensai/locket`.
+Docker image, publish MIT at `atensaiadmin/locket`, docs site, community feedback.
 
-*Status: Phase 1 complete, Phase 2 in progress.*
+*Status: Phase 1 ✅ complete. Phase 2 ✅ (logs viewer shipped). Next: Phase 3.*
