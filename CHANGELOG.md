@@ -3,6 +3,23 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] — 2026-08-14
+
+### Added
+- **Self-contained releases** — release zips now bundle the provisioning
+  scripts (`add.sh`, `generate.sh`, `deploy.sh`) and the installer scripts
+  (`install.sh`, `update.sh`, `uninstall.sh`), so a download installs
+  version-matched scripts with no dependency on the live repo.
+- Runtime scripts ship in the repo (`scripts/`) and `install.sh` deploys them
+  to `/opt/pocketbase/scripts/` automatically (chmod +x).
+
+### Fixed
+- **New Project works without Caddy** — `generate.sh` warns instead of failing
+  if Caddy isn't running, so the instance is still created and serves on its
+  port (just no https subdomain).
+- **New Project modal shows the script's real output on failure**, so errors
+  are visible in the UI instead of a bare "add.sh failed: exit status 1".
+
 ## [0.4.0] — 2026-08-14
 
 ### Added
