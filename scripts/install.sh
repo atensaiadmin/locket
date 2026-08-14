@@ -74,6 +74,20 @@ rm -rf "_tmp_$VERSION" "$ZIP"
 echo "==> Installed: $INSTALL_DIR/locket"
 "$INSTALL_DIR/locket" --version 2>/dev/null || true
 
+# ---- deploy provisioning scripts (add.sh / generate.sh / deploy.sh) -------
+# Locket shells out to these at /opt/pocketbase/scripts/, so a fresh install
+# provisions them automatically — no manual scp needed.
+PB_SCRIPTS="/opt/pocketbase/scripts"
+mkdir -p "$PB_SCRIPTS"
+for s in add.sh generate.sh deploy.sh; do
+  if curl -fsSL -o "$PB_SCRIPTS/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
+    chmod +x "$PB_SCRIPTS/$s"
+    echo "  installed provisioning script: $s"
+  else
+    echo "  WARN: could not fetch $s — New Project / Deploy may not work"
+  fi
+done
+
 # ---- systemd service ------------------------------------------------------
 echo "==> Creating systemd service"
 ENV_LINES=""
