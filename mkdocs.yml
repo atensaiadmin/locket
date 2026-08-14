@@ -1,0 +1,30 @@
+site_name: Locket
+site_description: The case you carry your PocketBase fleet in — a self-hosted control plane / fleet dashboard for PocketBase.
+repo_url: https://github.com/atensaiadmin/locket
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: emerald
+      accent: emerald
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: emerald
+      accent: emerald
+  logo: https://raw.githubusercontent.com/atensaiadmin/locket/main/web/src/assets/icon2.svg
+  favicon: https://raw.githubusercontent.com/atensaiadmin/locket/main/web/src/assets/icon2.svg
+
+markdown_extensions:
+  - admonition
+  - tables
+  - fenced_code
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Features: features.md
+  - Quick start: quickstart.md
+  - Roadmap: roadmap.md

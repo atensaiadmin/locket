@@ -25,44 +25,11 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
-      # Copy the public docs into a standalone site.
+      # Build the docs with MkDocs + Material theme (renders markdown → HTML).
       - name: Build docs site
         run: |
-          mkdir -p _site
-          cp -a docs/. _site/
-          # Add a small landing page that links into the docs.
-          cat > _site/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>Locket — Docs</title>
-            <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/atensaiadmin/locket/main/web/src/assets/icon2.svg" />
-            <style>
-              body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; color: #0f172a; line-height: 1.6; }
-              h1 { font-size: 1.6rem; }
-              a { color: #059669; text-decoration: none; }
-              a:hover { text-decoration: underline; }
-              ul { padding-left: 1.25rem; }
-            </style>
-          </head>
-          <body>
-            <img src="https://raw.githubusercontent.com/atensaiadmin/locket/main/web/src/assets/icon2.svg" alt="" width="48" height="48" />
-            <h1>Locket — Docs</h1>
-            <p>The case you carry your PocketBase fleet in. These docs are also available in
-               the <a href="https://github.com/atensaiadmin/locket">repository README</a>.</p>
-            <ul>
-              <li><a href="./overview.md">Overview</a></li>
-              <li><a href="./features.md">What it does</a></li>
-              <li><a href="./quickstart.md">Quick start</a></li>
-              <li><a href="./roadmap.md">Roadmap</a></li>
-            </ul>
-            <p><small>Note: these are plain Markdown files served as-is by GitHub Pages.
-               <a href="https://github.com/atensaiadmin/locket/tree/main/docs">View them nicely rendered on GitHub</a>.</small></p>
-          </body>
-          </html>
-          HTML
+          pip install --quiet mkdocs-material
+          mkdocs build --site-dir _site
           echo "Site contents:"
           ls -la _site
 
