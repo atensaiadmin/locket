@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react'
-import { fetchInstances, fetchVersion, runAction, type Instance, type VersionInfo } from './api'
+import {
+  fetchInstances,
+  fetchVersion,
+  runAction,
+  fetchAuthStatus,
+  storeKey,
+  clearStoredKey,
+  type Instance,
+  type VersionInfo,
+} from './api'
 import { Button } from './components/Button'
 import { StatusDot } from './components/StatusDot'
 import { LogsModal } from './components/LogsModal'
+import { AuthGate } from './components/AuthGate'
 
 export default function App() {
   const [instances, setInstances] = useState<Instance[]>([])
@@ -11,6 +21,7 @@ export default function App() {
   const [output, setOutput] = useState<string | null>(null)
   const [logsFor, setLogsFor] = useState<string | null>(null)
   const [version, setVersion] = useState<VersionInfo | null>(null)
+  const [auth, setAuth] = useState<'loading' | 'setup' | 'login' | 'ready'>('loading')
 
   const load = async () => {
     try {
@@ -21,10 +32,40 @@ export default function App() {
     }
   }
 
+  const loadVersion = () => fetchVersion().then(setVersion).catch(() => {})
+
   useEffect(() => {
-    load()
-    fetchVersion().then(setVersion).catch(() => {})
+    ;(async () => {
+      try {
+        const status = await fetchAuthStatus()
+        if (status.setup_required) {
+          setAuth('setup')
+        } else if (status.authenticated) {
+          setAuth('ready')
+          await load()
+          loadVersion()
+        } else {
+          setAuth('login')
+        }
+      } catch {
+        setAuth('login')
+      }
+    })()
   }, [])
+
+  const onAuthed = async (key: string) => {
+    storeKey(key)
+    setAuth('ready')
+    await load()
+    loadVersion()
+  }
+
+  const logout = () => {
+    clearStoredKey()
+    setAuth('login')
+    setInstances([])
+    setVersion(null)
+  }
 
   const act = async (name: string, action: 'deploy' | 'restart') => {
     setBusy(`${name}:${action}`)
@@ -40,6 +81,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
+      {auth === 'setup' && <AuthGate mode="setup" onAuthed={onAuthed} />}
+      {auth === 'login' && <AuthGate mode="login" onAuthed={onAuthed} />}
+      {auth === 'ready' && (
+        <>
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <h1 className="text-lg font-semibold tracking-tight">
@@ -51,9 +96,14 @@ export default function App() {
               </span>
             )}
           </h1>
-          <Button variant="ghost" onClick={load} disabled={!!busy}>
-            ↻ Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={load} disabled={!!busy}>
+              ↻ Refresh
+            </Button>
+            <Button variant="ghost" onClick={logout}>
+              Log out
+            </Button>
+          </div>
         </div>
         {version?.update_available && (
           <div className="border-t border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-800">
@@ -145,6 +195,8 @@ export default function App() {
       </main>
 
       {logsFor && <LogsModal name={logsFor} onClose={() => setLogsFor(null)} />}
+        </>
+      )}
     </div>
   )
 }

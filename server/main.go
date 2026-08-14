@@ -19,15 +19,27 @@ var (
 	configPath = flag.String("config", "/opt/pocketbase/projects.conf", "path to projects.conf")
 	addr       = flag.String("addr", ":8090", "listen address")
 	pbHome     = flag.String("pbhome", "/opt/pocketbase", "PocketBase home dir")
+	authFile   = flag.String("auth-file", "/opt/locket/auth.json", "path to the access-key store")
 )
 
 func main() {
 	flag.Parse()
 
+	// Safety guard (closes the first-visit window): if no access key is set and
+	// we'd bind all interfaces, refuse to start. Set a key first via the UI on
+	// 127.0.0.1, or export LOCKET_TOKEN.
+	if !keyIsSet() && addrBindsPublic(*addr) {
+		log.Fatalf("no access key configured and %s binds all interfaces.\n"+
+			"Set one by running on localhost and opening the setup screen, or export LOCKET_TOKEN=...", *addr)
+	}
+
 	http.HandleFunc("/api/health", handleLocketHealth)
-	http.HandleFunc("/api/version", handleVersion)
-	http.HandleFunc("/api/instances", handleInstances)
-	http.HandleFunc("/api/instances/", handleInstanceAction)
+	http.HandleFunc("/api/auth/status", handleAuthStatus)
+	http.HandleFunc("/api/auth/setup", handleAuthSetup)
+	http.HandleFunc("/api/auth/login", handleAuthLogin)
+	http.HandleFunc("/api/version", requireAuth(handleVersion))
+	http.HandleFunc("/api/instances", requireAuth(handleInstances))
+	http.HandleFunc("/api/instances/", requireAuth(handleInstanceAction))
 
 	// Serve the embedded web UI (built via build.sh → copied into server/static).
 	staticRoot, _ := fs.Sub(staticFS, "static")

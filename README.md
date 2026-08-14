@@ -23,11 +23,14 @@ PocketBase, and it only works where PocketBase is already running.
 On the server running PocketBase:
 
 ```bash
-# latest release, reachable on localhost only
+# localhost only (access via SSH tunnel)
 bash install.sh
 
-# or, to also expose it publicly via Caddy (point the domain at this server in DNS)
+# expose publicly via Caddy (adds auto-HTTPS; point the domain at this server in DNS)
 DOMAIN=locket.example.com bash install.sh
+
+# optionally pre-set the access key at install
+DOMAIN=locket.example.com TOKEN=mylongsecret bash install.sh
 ```
 
 That downloads the matching release binary, installs it to `/opt/locket`,
@@ -35,6 +38,9 @@ creates a systemd service, and (optionally) wires it into Caddy.
 
 **Requirements:** a server running PocketBase with a `projects.conf`
 (`/opt/pocketbase/projects.conf`), and systemd (any modern Linux).
+
+> **No domain?** Skip `DOMAIN` and reach Locket via an SSH tunnel — you can add a
+> domain later without reinstalling. See [docs/quickstart.md](docs/quickstart.md).
 
 ## Quick start
 

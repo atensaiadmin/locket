@@ -7,6 +7,7 @@
 #   bash install.sh                          # latest release, localhost only
 #   VERSION=0.1.0 bash install.sh            # specific version
 #   DOMAIN=locket.example.com bash install.sh  # + add Caddy reverse proxy
+#   TOKEN=mysecret bash install.sh           # pre-configure the access key
 set -euo pipefail
 
 # ---- config ---------------------------------------------------------------
@@ -14,7 +15,17 @@ VERSION="${VERSION:-latest}"
 DOMAIN="${DOMAIN:-}"                       # e.g. locket.atensai.com (empty = localhost only)
 ADDR="${ADDR:-:8090}"
 CONFIG="${CONFIG:-/opt/pocketbase/projects.conf}"
+TOKEN="${TOKEN:-}"                          # optional access key (see note below)
 INSTALL_DIR="/opt/locket"
+
+# If ADDR binds all interfaces (starts with ':') and no token is given, generate
+# one so Locket can start and stays protected from first boot. To set your own
+# key later, open the dashboard and use Settings, or re-run with TOKEN=...
+if [ -z "$TOKEN" ] && [ "${ADDR#:}" != "$ADDR" ]; then
+  TOKEN="$(head -c 24 /dev/urandom | base64 | tr -d '+/=' | head -c 32)"
+  echo "==> No TOKEN given and $ADDR is public — generated one:"
+  echo "    LOCKET_TOKEN=$TOKEN   (save this!)"
+fi
 
 REPO="atensaiadmin/locket"
 ARCH="$(uname -m)"
@@ -49,6 +60,10 @@ echo "==> Installed: $INSTALL_DIR/locket"
 
 # ---- systemd service ------------------------------------------------------
 echo "==> Creating systemd service"
+ENV_LINES=""
+if [ -n "$TOKEN" ]; then
+  ENV_LINES="Environment=LOCKET_TOKEN=$TOKEN"
+fi
 cat > /etc/systemd/system/locket.service <<EOF
 [Unit]
 Description=Locket — PocketBase control plane
@@ -57,6 +72,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=$INSTALL_DIR/locket --config $CONFIG --addr $ADDR
+$ENV_LINES
 Restart=on-failure
 RestartSec=5
 
