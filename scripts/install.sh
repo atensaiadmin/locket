@@ -69,16 +69,23 @@ BIN="$(find "_tmp_$VERSION" -type f \( -name locket -o -name locket.exe \) | hea
 
 mv "$BIN" ./locket
 chmod +x ./locket
-rm -rf "_tmp_$VERSION" "$ZIP"
 
 echo "==> Installed: $INSTALL_DIR/locket"
 "$INSTALL_DIR/locket" --version 2>/dev/null || true
 
-# ---- deploy provisioning scripts (add.sh / generate.sh / deploy.sh) -------
+# ---- deploy the bundled scripts (version-matched, from this release) -------
+# Provisioning scripts (add.sh / generate.sh / deploy.sh) go to PB_SCRIPTS so
+# the running server uses them.
+#
+# The installer scripts (install.sh / update.sh / uninstall.sh) are ALSO copied
+# to $INSTALL_DIR/scripts so FUTURE updates run the latest installer. Without
+# this, a stale copy of update.sh left on the server from an older release keeps
+# running the old (no-restart) installer — which is why updates previously
+# "downloaded the new binary but never restarted the service".
 # Prefer the scripts bundled in the release zip (version-matched); fall back to
 # raw.githubusercontent.com in case an older zip lacks them.
 PB_SCRIPTS="/opt/pocketbase/scripts"
-mkdir -p "$PB_SCRIPTS"
+mkdir -p "$PB_SCRIPTS" "$INSTALL_DIR/scripts"
 for s in add.sh generate.sh deploy.sh; do
   if [ -f "_tmp_$VERSION/$s" ]; then
     install -m 755 "_tmp_$VERSION/$s" "$PB_SCRIPTS/$s"
@@ -90,6 +97,19 @@ for s in add.sh generate.sh deploy.sh; do
     echo "  WARN: could not fetch $s — New Project / Deploy may not work"
   fi
 done
+for s in install.sh update.sh uninstall.sh; do
+  if [ -f "_tmp_$VERSION/$s" ]; then
+    install -m 755 "_tmp_$VERSION/$s" "$INSTALL_DIR/scripts/$s"
+    echo "  installed installer script: $s (from release)"
+  elif curl -fsSL -o "$INSTALL_DIR/scripts/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
+    chmod +x "$INSTALL_DIR/scripts/$s"
+    echo "  installed installer script: $s (from GitHub)"
+  else
+    echo "  WARN: could not fetch $s — future updates won't auto-restart"
+  fi
+done
+
+rm -rf "_tmp_$VERSION" "$ZIP"
 
 # ---- systemd service ------------------------------------------------------
 echo "==> Creating systemd service"
@@ -141,3 +161,4 @@ echo ""
 echo "Done. Locket is running at $ADDR"
 [ -n "$DOMAIN" ] && echo "Dashboard: https://$DOMAIN"
 echo "Check it:  curl -s http://127.0.0.1${ADDR#:}/api/health"
+echo "Update it later with:  bash $INSTALL_DIR/scripts/update.sh"

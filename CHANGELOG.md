@@ -3,6 +3,19 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.5.2] — 2026-08-16
+
+### Changed
+- **Installer is now self-installing** — `install.sh` copies the latest
+  `install.sh` / `update.sh` / `uninstall.sh` to `/opt/locket/scripts/`, so
+  future updates always run the newest installer. A stale copy of `update.sh`
+  left on the server (from an older release) previously kept running the old
+  no-restart installer — that's why updates "downloaded but never restarted".
+  Canonical update command is now: `bash /opt/locket/scripts/update.sh`.
+- Bundled provisioning scripts are now actually deployed **from the release
+  zip** (version-matched) instead of always falling back to GitHub raw — the
+  temp extraction dir was being deleted before they were copied.
+
 ## [0.5.1] — 2026-08-16
 
 ### Fixed

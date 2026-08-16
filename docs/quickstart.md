@@ -64,12 +64,15 @@ server, then open `https://<domain>/_/` to create the PocketBase superuser.
 On the server:
 
 ```bash
-bash update.sh                 # to the latest release
-VERSION=0.4.0 bash update.sh   # to a specific version
+bash /opt/locket/scripts/update.sh   # to the latest release
+VERSION=0.4.0 bash /opt/locket/scripts/update.sh   # to a specific version
 ```
 
 `update.sh` downloads the matching release zip, replaces the binary, rewrites
-the systemd unit (**preserving your access key**), and restarts.
+the systemd unit (**preserving your access key**), and **restarts the service**
+so the new version actually loads. `install.sh` also keeps a fresh copy of
+itself at `/opt/locket/scripts/`, so running the update from there always uses
+the latest installer — you never need to re-download a zip to update.
 
 ## Verify it works
 
@@ -85,10 +88,11 @@ instances, and the header shows the running Locket version. The "update
 available" banner only appears when a newer release exists — if you just
 updated and the banner is gone, you're on the latest.
 
-> **Updated but still on the old version?** Older `install.sh` didn't restart an
+> **Updated but still on the old version?** Older installers didn't restart an
 > already-running service, so the new binary was downloaded but not loaded. Run
-> `systemctl restart locket` — a fresh Main PID in `systemctl status` means the
-> new binary is running.
+> `systemctl restart locket` once — a fresh Main PID in `systemctl status` means
+> the new binary is running. From v0.5.2 onward, updates restart automatically
+> (and `install.sh` installs the latest `update.sh` to `/opt/locket/scripts/`).
 
 ## Adding a domain later (no reinstall)
 
