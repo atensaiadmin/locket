@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0f172a;
+      --success-bg: #dcfce7;
+      --success-text: #15803d;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      margin: 0;
+      padding: 32px 10%;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .badge-version {
+      background: #e2e8f0;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .instance-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .project-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .project-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--success-bg);
+      color: var(--success-text);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--success-text);
+      border-radius: 50%;
+    }
+
+    .metrics-bar {
+      display: flex;
+      gap: 24px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .metric-item span {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-main);
+    }
+
+    .btn:hover {
+      background: var(--bg-page);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #1e293b;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="brand">
+      🔒 Locket <span class="badge-version">v0.4.1</span>
+    </div>
+    <div>
+      <button class="btn btn-primary">+ New Project</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- INSTANCE 1 -->
+    <div class="instance-card">
+      <div class="card-top">
+        <div>
+          <div class="project-name">prodlogonline</div>
+          <div class="project-meta">prodlogonline.atensai.com • Port 8091</div>
+        </div>
+        <div class="status-badge"><div class="status-dot"></div> healthy</div>
+      </div>
+
+      <div class="metrics-bar">
+        <div class="metric-item">Uptime: <span>2d 10h</span></div>
+        <div class="metric-item">Disk: <span>1.7 MB</span></div>
+        <div class="metric-item">Backups: <span>None</span></div>
+        <div class="metric-item">PB Version: <span>v0.39.10</span></div>
+      </div>
+
+      <div class="card-actions">
+        <div class="btn-group">
+          <button class="btn">Logs</button>
+          <button class="btn">Restart</button>
+        </div>
+        <button class="btn btn-primary">Deploy</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   fetchInstances,
   fetchVersion,
@@ -13,7 +13,7 @@ import {
 } from './api'
 import { Button } from './components/Button'
 import { StatusDot } from './components/StatusDot'
-import { LogsModal } from './components/LogsModal'
+import { LogsDrawer } from './components/LogsDrawer'
 import { AuthGate } from './components/AuthGate'
 import { Sparkline } from './components/Sparkline'
 import { NewProjectModal } from './components/NewProjectModal'
@@ -141,7 +141,7 @@ export default function App() {
       {auth === 'ready' && (
         <>
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <h1 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
             <img src={locketIcon} alt="" className="h-6 w-6" />
             <span>
@@ -182,105 +182,103 @@ export default function App() {
         )}
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
+      <main className="mx-auto max-w-6xl px-6 py-8">
         {error && (
           <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             {error}
           </div>
         )}
 
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-                <th className="px-4 py-3 font-medium">Project</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Port</th>
-                <th className="px-4 py-3 font-medium">Domain</th>
-                <th className="px-4 py-3 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {instances.map((i) => (
-                <Fragment key={i.name}>
-                  <tr className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium">{i.name}</td>
-                    <td className="px-4 py-3">
-                      <StatusDot healthy={i.health.healthy} />
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{i.port}</td>
-                    <td className="px-4 py-3">
+        {instances.length === 0 && !error ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+            <p className="text-sm text-slate-500">No instances found in projects.conf</p>
+            <Button className="mt-4" onClick={() => setCreating(true)}>
+              ＋ New Project
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {instances.map((i) => (
+              <article
+                key={i.name}
+                className="flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="flex items-start justify-between gap-3 px-5 pt-5">
+                  <div className="min-w-0">
+                    <h3 className="truncate text-sm font-semibold text-slate-900">{i.name}</h3>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">
                       <a
                         href={`https://${i.domain}/_/`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-slate-700 underline decoration-slate-300 hover:text-slate-900"
+                        className="underline decoration-slate-300 hover:text-slate-900"
                       >
                         {i.domain}
                       </a>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" onClick={() => setLogsFor(i.name)}>
-                          Logs
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          disabled={!!busy}
-                          onClick={() => act(i.name, 'restart')}
-                        >
-                          Restart
-                        </Button>
-                        <Button disabled={!!busy} onClick={() => act(i.name, 'deploy')}>
-                          {busy === `${i.name}:deploy` ? 'Deploying…' : 'Deploy'}
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="bg-slate-50/60">
-                    <td colSpan={5} className="px-4 pb-3">
-                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500">
-                        <span className="inline-flex items-center gap-1.5">
-                          <span className="text-slate-400">Uptime</span>
-                          <span className="font-medium text-slate-700">{fmtUptime(i.ops?.uptime_seconds ?? 0)}</span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <span className="text-slate-400">Disk</span>
-                          <span className="font-medium text-slate-700">
-                            {i.ops?.disk_available ? fmtBytes(i.ops.disk_bytes) : '–'}
-                          </span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <span className="text-slate-400">Backups</span>
-                          <span className="font-medium text-slate-700">
-                            {i.ops?.backup_count ? `${i.ops.backup_count}` : '–'}
-                          </span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <span className="text-slate-400">PB</span>
-                          <span className="font-medium text-slate-700">
-                            {i.ops?.version ? `v${i.ops.version.replace(/^v/, '')}` : '–'}
-                          </span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <span className="text-slate-400">History</span>
-                          <Sparkline points={history[i.name] ?? []} />
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </Fragment>
-              ))}
-              {instances.length === 0 && !error && (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
-                    No instances found in projects.conf
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                      <span className="mx-1.5 text-slate-300">•</span>
+                      Port {i.port}
+                    </p>
+                  </div>
+                  <StatusDot healthy={i.health.healthy} />
+                </div>
+
+                <div className="mt-4 border-y border-slate-100 bg-slate-50/60 px-5 py-3">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
+                    <div>
+                      <p className="text-slate-400">Uptime</p>
+                      <p className="mt-0.5 font-medium text-slate-700">
+                        {fmtUptime(i.ops?.uptime_seconds ?? 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">Disk</p>
+                      <p className="mt-0.5 font-medium text-slate-700">
+                        {i.ops?.disk_available ? fmtBytes(i.ops.disk_bytes) : '–'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">Backups</p>
+                      <p className="mt-0.5 font-medium text-slate-700">
+                        {i.ops?.backup_count ? `${i.ops.backup_count}` : '–'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400">PB</p>
+                      <p className="mt-0.5 font-medium text-slate-700">
+                        {i.ops?.version ? `v${i.ops.version.replace(/^v/, '')}` : '–'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+                    <p className="text-slate-400">History</p>
+                    <Sparkline points={history[i.name] ?? []} />
+                  </div>
+                </div>
+
+                <div className="mt-auto flex items-center gap-2 px-5 py-4">
+                  <Button variant="outline" onClick={() => setLogsFor(i.name)}>
+                    Logs
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={!!busy}
+                    onClick={() => act(i.name, 'restart')}
+                  >
+                    Restart
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="ml-auto"
+                    disabled={!!busy}
+                    onClick={() => act(i.name, 'deploy')}
+                  >
+                    {busy === `${i.name}:deploy` ? 'Deploying…' : 'Deploy'}
+                  </Button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         {output && (
           <div className="mt-4 rounded-lg border border-slate-200 bg-slate-900 p-4 text-xs text-slate-100">
@@ -289,7 +287,7 @@ export default function App() {
         )}
       </main>
 
-      {logsFor && <LogsModal name={logsFor} onClose={() => setLogsFor(null)} />}
+      {logsFor && <LogsDrawer name={logsFor} onClose={() => setLogsFor(null)} />}
       {creating && (
         <NewProjectModal
           defaultPort={nextPort()}
