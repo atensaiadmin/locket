@@ -114,7 +114,11 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable --now locket
+systemctl enable locket
+# Always (re)start so a freshly installed binary is actually loaded.
+# NOTE: `enable --now` alone does NOT restart an already-running service, which
+# previously caused updates to silently keep the old process running.
+systemctl restart locket
 systemctl status locket --no-pager | head -8
 
 # ---- optional: Caddy reverse proxy ----------------------------------------

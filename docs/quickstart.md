@@ -85,6 +85,11 @@ instances, and the header shows the running Locket version. The "update
 available" banner only appears when a newer release exists — if you just
 updated and the banner is gone, you're on the latest.
 
+> **Updated but still on the old version?** Older `install.sh` didn't restart an
+> already-running service, so the new binary was downloaded but not loaded. Run
+> `systemctl restart locket` — a fresh Main PID in `systemctl status` means the
+> new binary is running.
+
 ## Adding a domain later (no reinstall)
 
 Locket doesn't care about the domain — **Caddy** does. To expose it later:
