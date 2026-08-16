@@ -71,6 +71,20 @@ VERSION=0.4.0 bash update.sh   # to a specific version
 `update.sh` downloads the matching release zip, replaces the binary, rewrites
 the systemd unit (**preserving your access key**), and restarts.
 
+## Verify it works
+
+On the server:
+
+```bash
+systemctl status locket      # should show: active (running)
+curl -s http://127.0.0.1:8090/api/health   # {"message":"API is healthy.",...}
+```
+
+Then open the dashboard (step 2): you should see the fleet table with your
+instances, and the header shows the running Locket version. The "update
+available" banner only appears when a newer release exists — if you just
+updated and the banner is gone, you're on the latest.
+
 ## Adding a domain later (no reinstall)
 
 Locket doesn't care about the domain — **Caddy** does. To expose it later:
@@ -86,15 +100,6 @@ systemctl reload caddy
 ```
 
 Or simply re-run `DOMAIN=locket.example.com bash install.sh` — it's idempotent.
-
-## Updating
-
-```bash
-bash update.sh               # latest release
-VERSION=0.2.0 bash update.sh # specific version
-```
-
-Locket shows an "update available" banner when a newer release exists.
 
 ## Removing
 
