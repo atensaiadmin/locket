@@ -3,6 +3,13 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-08-16
+
+### Changed
+- **Logs open in a side drawer** instead of a modal (`LogsDrawer` replaces
+  `LogsModal`) — easier to read logs while keeping the fleet table in view.
+- Dashboard polish: refreshed fleet table layout and button styling.
+
 ## [0.4.1] — 2026-08-14
 
 ### Added
