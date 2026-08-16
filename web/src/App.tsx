@@ -47,6 +47,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [output, setOutput] = useState<string | null>(null)
+  const [outputError, setOutputError] = useState(false)
   const [logsFor, setLogsFor] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
   const [version, setVersion] = useState<VersionInfo | null>(null)
@@ -110,12 +111,18 @@ export default function App() {
   }
 
   const act = async (name: string, action: 'deploy' | 'restart') => {
+    // Clear any previous output so a new action starts clean (previously a
+    // stale error stayed on screen until the page was refreshed).
     setBusy(`${name}:${action}`)
+    setOutput(null)
+    setOutputError(false)
     try {
       setOutput(await runAction(name, action))
       await load()
     } catch (e) {
-      setOutput(e instanceof Error ? e.message : 'action failed')
+      const err = e as Error & { output?: string }
+      setOutput(err.output ? `${err.message}\n\n${err.output}` : (e instanceof Error ? e.message : 'action failed'))
+      setOutputError(true)
     } finally {
       setBusy(null)
     }
@@ -280,9 +287,32 @@ export default function App() {
           </div>
         )}
 
-        {output && (
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-900 p-4 text-xs text-slate-100">
-            <pre className="whitespace-pre-wrap">{output}</pre>
+        {output !== null && (
+          <div
+            className={`mt-4 overflow-hidden rounded-lg border bg-slate-900 text-xs text-slate-100 ${
+              outputError ? 'border-rose-500/50' : 'border-slate-200'
+            }`}
+          >
+            <div className="flex items-center justify-between border-b border-slate-700/50 px-4 py-2">
+              <span
+                className={`text-[10px] font-semibold uppercase tracking-wider ${
+                  outputError ? 'text-rose-400' : 'text-slate-400'
+                }`}
+              >
+                {outputError ? '✕ Action failed' : 'Output'}
+              </span>
+              <button
+                onClick={() => {
+                  setOutput(null)
+                  setOutputError(false)
+                }}
+                aria-label="Dismiss output"
+                className="rounded px-1.5 text-sm leading-none text-slate-400 hover:bg-slate-700/50 hover:text-slate-100"
+              >
+                ✕
+              </button>
+            </div>
+            <pre className="max-h-96 overflow-auto whitespace-pre-wrap p-4">{output}</pre>
           </div>
         )}
       </main>

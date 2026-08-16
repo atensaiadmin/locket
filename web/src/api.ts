@@ -72,7 +72,9 @@ export interface AuthStatus {
 }
 
 export async function fetchAuthStatus(): Promise<AuthStatus> {
-  const res = await fetch('/api/auth/status')
+  // Send the stored key so a page refresh keeps you logged in (the server only
+  // reports authenticated=true when a valid Bearer token is present).
+  const res = await fetch('/api/auth/status', withAuth())
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }
@@ -115,7 +117,11 @@ export async function runAction(name: string, action: Action): Promise<string> {
   const res = await fetch(`/api/instances/${name}/${action}`, withAuth({ method: 'POST' }))
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    throw new Error(body?.error ?? `HTTP ${res.status}`)
+    // Attach the script's own output so the UI can show the real failure detail,
+    // not just a terse message like "exit status 1".
+    const err = new Error(body?.error ?? `HTTP ${res.status}`) as Error & { output?: string }
+    err.output = body?.output
+    throw err
   }
   const data = await res.json()
   return data.output ?? ''

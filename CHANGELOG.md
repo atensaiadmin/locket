@@ -3,6 +3,21 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.5.1] — 2026-08-16
+
+### Fixed
+- **Updates now actually take effect** — `install.sh` restarts `locket.service`
+  after installing a new binary (`enable --now` alone never restarted an
+  already-running service, so the old process kept running in memory after
+  `update.sh`). One-time fix for already-updated servers:
+  `systemctl restart locket`.
+- **Stay logged in across refreshes** — `/api/auth/status` now sends the stored
+  access key, so reloading or restarting the page no longer drops you back to
+  the login screen.
+- **Deploy/Restart output no longer sticks around** — output is cleared when a
+  new action starts and can be dismissed with an ✕ button. Failed actions now
+  show the script's real output (styled red) instead of a bare "exit status 1".
+
 ## [0.5.0] — 2026-08-16
 
 ### Changed
