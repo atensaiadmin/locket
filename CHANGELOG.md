@@ -3,6 +3,15 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.5.4] — 2026-08-17
+
+### Fixed
+- **New Project modal now closes on success** — after a project was created the
+  modal stayed open with the "Create project" button still active, so clicking
+  it again re-submitted and errored with "project already exists". The modal now
+  auto-closes, shows the provisioning output in the main output area (so the
+  "point DNS" next step isn't lost), and refreshes the fleet list.
+
 ## [0.5.3] — 2026-08-17
 
 ### Fixed

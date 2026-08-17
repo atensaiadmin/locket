@@ -5,7 +5,7 @@ import { Button } from './Button'
 interface NewProjectModalProps {
   defaultPort: string
   onClose: () => void
-  onCreated: () => void
+  onCreated: (output: string) => void
 }
 
 export function NewProjectModal({ defaultPort, onClose, onCreated }: NewProjectModalProps) {
@@ -25,8 +25,12 @@ export function NewProjectModal({ defaultPort, onClose, onCreated }: NewProjectM
     setOutput(null)
     try {
       const res = await createProject(name.trim(), port.trim(), domain.trim())
-      setOutput(res.output)
-      onCreated()
+      // Success: pass the provisioning output up (shown in the main output
+      // area) and close the modal — otherwise the form stays open with the
+      // "Create project" button still active, and re-clicking it errors with
+      // "project already exists".
+      onCreated(res.output)
+      onClose()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'failed to create project')
       const out = (e as { output?: string }).output

@@ -137,8 +137,9 @@ export default function App() {
     return String(max + 1)
   }
 
-  const onProjectCreated = async () => {
-    await load()
+  const onProjectCreated = (output: string) => {
+    if (output) setOutput(output)
+    void load()
   }
 
   return (
