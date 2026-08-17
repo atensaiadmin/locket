@@ -86,9 +86,15 @@ echo "==> Installed: $INSTALL_DIR/locket"
 # raw.githubusercontent.com in case an older zip lacks them.
 PB_SCRIPTS="/opt/pocketbase/scripts"
 mkdir -p "$PB_SCRIPTS" "$INSTALL_DIR/scripts"
+# The release zip wraps everything in a folder (locket_<v>_<os>_<arch>/), so the
+# bundled scripts live BELOW the extraction root. Resolve them recursively (the
+# same way the binary is found above) — a root-relative `[ -f "_tmp_$VERSION/$s" ]`
+# check missed the wrapped files, fell back to raw.githubusercontent.com, and got
+# HTTP 429 (rate-limited), which silently left add.sh / generate.sh / deploy.sh
+# uninstalled → "New Project / Deploy may not work".
 for s in add.sh generate.sh deploy.sh; do
-  if [ -f "_tmp_$VERSION/$s" ]; then
-    install -m 755 "_tmp_$VERSION/$s" "$PB_SCRIPTS/$s"
+  if SRC="$(find "_tmp_$VERSION" -type f -name "$s" -print -quit)" && [ -n "$SRC" ]; then
+    install -m 755 "$SRC" "$PB_SCRIPTS/$s"
     echo "  installed provisioning script: $s (from release)"
   elif curl -fsSL -o "$PB_SCRIPTS/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
     chmod +x "$PB_SCRIPTS/$s"
@@ -98,8 +104,8 @@ for s in add.sh generate.sh deploy.sh; do
   fi
 done
 for s in install.sh update.sh uninstall.sh; do
-  if [ -f "_tmp_$VERSION/$s" ]; then
-    install -m 755 "_tmp_$VERSION/$s" "$INSTALL_DIR/scripts/$s"
+  if SRC="$(find "_tmp_$VERSION" -type f -name "$s" -print -quit)" && [ -n "$SRC" ]; then
+    install -m 755 "$SRC" "$INSTALL_DIR/scripts/$s"
     echo "  installed installer script: $s (from release)"
   elif curl -fsSL -o "$INSTALL_DIR/scripts/$s" "https://raw.githubusercontent.com/$REPO/main/scripts/$s"; then
     chmod +x "$INSTALL_DIR/scripts/$s"

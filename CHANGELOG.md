@@ -3,6 +3,17 @@
 All notable changes to Locket. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.5.3] — 2026-08-17
+
+### Fixed
+- **Updates no longer break New Project / Deploy** — `install.sh` looked for the
+  release's bundled scripts at the zip root (`_tmp_$VERSION/$s`), but the zip
+  wraps everything in `locket_<v>_<os>_<arch>/`, so the check never matched. It
+  then fell back to `raw.githubusercontent.com`, which rate-limits (HTTP 429),
+  leaving `add.sh` / `generate.sh` / `deploy.sh` uninstalled. Bundled scripts
+  are now resolved recursively with `find` (like the binary), so updates install
+  version-matched scripts from the zip with no GitHub dependency.
+
 ## [0.5.2] — 2026-08-16
 
 ### Changed
